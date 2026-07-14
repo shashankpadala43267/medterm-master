@@ -8,7 +8,7 @@ The project combines quizzes, explanations, flashcards, medical word breakdowns,
 
 https://shashankpadala43267.github.io/medterm-master/
 
-## Screenshots
+## screenshots
 
 Medical terminology can be difficult because many students memorize complete definitions without understanding how medical words are built.
 
