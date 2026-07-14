@@ -10,6 +10,34 @@ https://shashankpadala43267.github.io/medterm-master/
 
 ## Screenshots
 
+### Home Page
+
+[MedTerm Master home page](screenshots/home-page.png)
+
+### Quiz Builder
+
+[MedTerm Master quiz builder](screenshots/quiz-builder.png)
+
+### Quiz Screen
+
+[MedTerm Master quiz screen](screenshots/quiz-screen.png)
+
+### Explain Term Feature
+
+[MedTerm Master medical term breakdown](screenshots/explain-term.png)
+
+### Searchable Study Guide
+
+[MedTerm Master searchable study guide](screenshots/study-guide.png)
+
+### Flashcard Mode
+
+[MedTerm Master flashcard mode](screenshots/flashcards.png)
+
+### Progress Dashboard
+
+[MedTerm Master progress dashboard](screenshots/progress-dashboard.png)
+
 Medical terminology can be difficult because many students memorize complete definitions without understanding how medical words are built.
 
 I created MedTerm Master to make studying more active, organized, and understandable. In addition to testing users, the platform helps them learn from mistakes, review difficult concepts, break down medical words, and track their improvement over time.
