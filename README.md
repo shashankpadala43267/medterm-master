@@ -1,17 +1,18 @@
 # MedTerm Master
 
-MedTerm Master is an interactive medical terminology study platform designed for HOSA competitors, health-science students, and anyone trying to learn medical vocabulary/terminology.
+MedTerm Master is an interactive medical terminology study platform designed for HOSA competitors, health-science students, and anyone learning medical vocabulary.
 
 The project combines quizzes, explanations, flashcards, medical word breakdowns, progress tracking, account syncing, and verified usage analytics in one responsive web application.
+
 ## Live Website
 
 https://shashankpadala43267.github.io/medterm-master/
 
-## Project Purpose
+## Screenshots
 
 Medical terminology can be difficult because many students memorize complete definitions without understanding how medical words are built.
 
-MedTerm Master was created to make studying more active and understandable. In addition to testing users, the platform helps them learn from mistakes, review difficult concepts, break down medical words, and track improvement over time.
+I created MedTerm Master to make studying more active, organized, and understandable. In addition to testing users, the platform helps them learn from mistakes, review difficult concepts, break down medical words, and track their improvement over time.
 
 ## Main Features
 
@@ -38,6 +39,7 @@ MedTerm Master was created to make studying more active and understandable. In a
 - Verified-user tracking
 - Private administrator analytics
 - Responsive design for desktop and mobile devices
+- Accessibility-focused keyboard and focus support
 
 ## Explain Term Feature
 
@@ -53,7 +55,7 @@ Example:
 
 Overall meaning: disease of the heart muscle.
 
-This feature encourages users to recognize prefixes, roots, combining forms, and suffixes instead of memorizing every term as a separate word.
+This feature helps students recognize prefixes, roots, combining forms, and suffixes instead of memorizing every medical term as a completely separate word.
 
 ## Quiz System
 
@@ -64,7 +66,15 @@ Users can choose:
 - Test mode or study mode
 - A timer setting
 
-During a quiz, the platform tracks score, progress, remaining questions, and time. After finishing, users can review missed questions, study explanations, retry incorrect questions, or begin a new quiz.
+During a quiz, the platform tracks score, progress, remaining questions, and time.
+
+After finishing, users can:
+
+- Review missed questions
+- Read explanations
+- Retry incorrect questions
+- Print or save results
+- Begin a new quiz
 
 ## Account and Progress System
 
@@ -100,7 +110,7 @@ The private administrator analytics section tracks:
 - Total quizzes completed
 - Total questions answered
 
-This provides a more meaningful measure of usage than page views or repeat visits.
+This provides a more meaningful measure of usage than page views, repeat visits, or browser sessions.
 
 ## Privacy and Security
 
@@ -109,10 +119,9 @@ This provides a more meaningful measure of usage than page views or repeat visit
 - Aggregate analytics are visible only to the authorized administrator
 - Firestore security rules restrict access to user records
 - The platform does not collect medical records or health information
-- MedTerm Master is intended only for educational use
+- The project is intended only for educational use
 
 ## Technologies Used
-
 - HTML
 - CSS
 - JavaScript
@@ -122,7 +131,7 @@ This provides a more meaningful measure of usage than page views or repeat visit
 - Browser local storage
 - Responsive web design
 - Accessibility-focused interface design
-
+- 
 ## Development History
 
 MedTerm Master went through 7 major development versions.
@@ -155,7 +164,25 @@ Improved answer shuffling, keyboard behavior, mobile responsiveness, focus state
 
 Added Google Sign-In, verified-user tracking, private administrator analytics, Firestore storage, and cross-device account progress syncing.
 
+## User Testing and Improvements
+
+MedTerm Master is designed to improve through real user testing and feedback.
+
+Testing can include asking HOSA and health-science students to evaluate:
+
+- Ease of navigation
+- Quiz difficulty
+- Explanation quality
+- Mobile usability
+- Usefulness of the Explain Term feature
+- Progress tracking
+- Account syncing
+
+After testing, this section should describe the actual feedback received and the changes made because of it.
+
 ## Current Impact
+
+Update this section only with verified data from the private analytics dashboard.
 
 - Authenticated active users: To be updated
 - Quizzes completed: To be updated
@@ -166,7 +193,7 @@ Added Google Sign-In, verified-user tracking, private administrator analytics, F
 Through this project, I learned how to:
 
 - Build and organize a large JavaScript application
-- Manage a database of hundreds of quiz questions
+- Manage hundreds of quiz questions
 - Design a responsive and accessible user interface
 - Debug keyboard, quiz, and account behavior
 - Work with Firebase Authentication
@@ -183,15 +210,26 @@ Through this project, I learned how to:
 - Add category-specific performance reports
 - Improve accessibility testing
 - Gather structured feedback from HOSA students
-- Add optional teacher or chapter-level study reports
 - Continue improving mobile usability
+- Add optional teacher or chapter-level progress reports
 
 ## Project Value
 
-MedTerm Master combines health science, education, and computer science. It was built to solve a real study problem and was improved through multiple development versions rather than being treated as a one-time assignment.
+MedTerm Master combines health science, education, and computer science.
 
-The project demonstrates software design, database organization, user authentication, cloud data storage, analytics, responsive interface design, debugging, product iteration, and educational tool development.
+It was built to solve a real study problem and was improved through multiple development versions rather than being treated as a one-time assignment.
 
+The project demonstrates:
+
+- Software design
+- Database organization
+- User authentication
+- Cloud data storage
+- Usage analytics
+- Responsive interface design
+- Debugging
+- Product iteration
+- Educational technology development
 ## Disclaimer
 
 MedTerm Master is an educational study tool. It does not provide medical advice, diagnosis, or treatment.
