@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#082f49">
+<meta name="description" content="MedTerm Master is an interactive HOSA medical terminology study platform with quizzes, flashcards, explanations, progress tracking, and review tools.">
+<meta name="application-name" content="MedTerm Master">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MedTerm Master">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2224%22 fill=%22%2322d3c5%22/><text y=%22.82em%22 x=%22.5em%22 text-anchor=%22middle%22 font-size=%2272%22>⚕</text></svg>">
+<title>MedTerm Master | HOSA Medical Terminology Quiz</title>
+<style>
+:root{--bg:#06131f;--panel:#0b2133;--panel2:#102d43;--text:#f8fafc;--muted:#a8c0d4;--teal:#22d3c5;--blue:#38bdf8;--green:#34d399;--red:#fb7185;--amber:#fbbf24;--line:rgba(255,255,255,.1);--shadow:0 24px 70px rgba(0,0,0,.34)}
+*{box-sizing:border-box} html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top left,#0d3c53 0,transparent 35%),radial-gradient(circle at bottom right,#122c5b 0,transparent 35%),var(--bg);color:var(--text)}
+body{min-height:100vh} button,select,input{font:inherit} button{cursor:pointer}
+.app{min-height:100vh;display:flex;flex-direction:column} .topbar{height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,56px);border-bottom:1px solid var(--line);background:rgba(4,18,29,.78);backdrop-filter:blur(16px);position:sticky;top:0;z-index:20}
+.brand{display:flex;gap:12px;align-items:center;font-weight:800;letter-spacing:.2px} .logo{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--teal),var(--blue));box-shadow:0 10px 30px rgba(34,211,197,.25)}
+.top-actions{display:flex;gap:10px} .icon-btn{border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--text);padding:9px 13px;border-radius:12px}
+main{width:min(1100px,100%);margin:0 auto;padding:clamp(20px,4vw,52px)} .screen{display:none;animation:fade .28s ease} .screen.active{display:block} @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:26px;align-items:stretch} .card{background:linear-gradient(180deg,rgba(16,45,67,.96),rgba(9,30,47,.96));border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow)} .hero-card{padding:clamp(26px,5vw,54px)}
+.badge{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(34,211,197,.35);background:rgba(34,211,197,.1);color:#a7fff4;padding:8px 12px;border-radius:999px;font-size:.86rem;font-weight:700} h1{font-size:clamp(2.35rem,6vw,5rem);line-height:.98;margin:24px 0 18px;letter-spacing:-.055em} .gradient{background:linear-gradient(90deg,#e0fbff,var(--teal),var(--blue));-webkit-background-clip:text;color:transparent} .lead{color:var(--muted);font-size:clamp(1rem,2vw,1.18rem);line-height:1.7;max-width:700px}
+.primary,.secondary,.danger{border:0;border-radius:14px;padding:14px 18px;font-weight:800;transition:.18s transform,.18s filter} .primary{background:linear-gradient(135deg,var(--teal),var(--blue));color:#032331;box-shadow:0 13px 35px rgba(34,211,197,.22)} .secondary{background:rgba(255,255,255,.07);border:1px solid var(--line);color:var(--text)} .danger{background:rgba(251,113,133,.13);border:1px solid rgba(251,113,133,.3);color:#ffd5dc} .primary:hover,.secondary:hover,.danger:hover{transform:translateY(-2px);filter:brightness(1.06)} .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.stat-card{padding:28px;display:flex;flex-direction:column;justify-content:center} .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px} .stat{padding:20px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.035)} .stat strong{display:block;font-size:1.7rem} .stat span{color:var(--muted);font-size:.9rem}
+.section-title{font-size:clamp(1.8rem,4vw,2.7rem);margin:0 0 8px} .section-sub{margin:0 0 28px;color:var(--muted)} .category-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px} .category{text-align:left;padding:20px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.045);color:var(--text);transition:.18s} .category:hover,.category.selected{transform:translateY(-3px);border-color:rgba(34,211,197,.6);background:rgba(34,211,197,.1)} .category b{display:block;font-size:1rem;margin-bottom:6px} .category small{color:var(--muted)}
+.setup{margin-top:24px;padding:22px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px} .field label{display:block;color:var(--muted);font-size:.86rem;margin-bottom:8px} select{width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:#0a2031;color:var(--text)} .setup-actions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:10px}
+.quiz-shell{display:grid;grid-template-columns:1fr 280px;gap:20px} .quiz-card{padding:clamp(20px,4vw,38px)} .quiz-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start} .eyebrow{color:var(--teal);font-size:.82rem;text-transform:uppercase;letter-spacing:.13em;font-weight:800} .question{font-size:clamp(1.5rem,3.7vw,2.45rem);line-height:1.2;margin:14px 0 24px} .progress-track{height:10px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden} .progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--blue));transition:width .3s}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:24px} .answer{text-align:left;padding:17px;border-radius:15px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--text);display:flex;gap:12px;align-items:center;min-height:68px;transition:.16s} .answer:hover{border-color:rgba(56,189,248,.55);transform:translateY(-2px)} .answer:disabled{cursor:default} .answer.correct{border-color:var(--green);background:rgba(52,211,153,.15)} .answer.wrong{border-color:var(--red);background:rgba(251,113,133,.13)} .letter{width:34px;height:34px;flex:0 0 auto;border-radius:10px;display:grid;place-items:center;background:rgba(255,255,255,.08);font-weight:900}
+.feedback{min-height:74px;margin-top:20px;border-radius:15px;padding:16px 18px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--muted);line-height:1.5} .feedback.good{color:#b9ffe3;border-color:rgba(52,211,153,.35)} .feedback.bad{color:#ffd2da;border-color:rgba(251,113,133,.35)} .side{padding:20px;height:max-content;position:sticky;top:88px} .side-row{display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line)} .side-row span{color:var(--muted)} .timer{font-variant-numeric:tabular-nums;font-size:1.35rem;font-weight:900} .timer.low{color:var(--red)}
+.results{padding:clamp(24px,5vw,48px)} .score-ring{width:170px;height:170px;border-radius:50%;margin:22px auto;display:grid;place-items:center;background:conic-gradient(var(--teal) var(--score),rgba(255,255,255,.08) 0);position:relative} .score-ring:after{content:"";position:absolute;inset:13px;border-radius:50%;background:#0b2133} .score-ring div{z-index:1;text-align:center} .score-ring strong{font-size:2.1rem;display:block} .result-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap} .breakdown{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:28px} .break-item{padding:16px;border-radius:15px;background:rgba(255,255,255,.04);border:1px solid var(--line)} .review-list{display:grid;gap:12px;margin-top:22px;max-height:55vh;overflow:auto;padding-right:5px} .review-item{padding:18px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line)} .review-item p{color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,120px);padding:12px 18px;background:#eafcff;color:#042432;border-radius:12px;font-weight:800;transition:.25s;z-index:50} .toast.show{transform:translate(-50%,0)}
+@media(max-width:800px){.hero,.quiz-shell{grid-template-columns:1fr} .category-grid{grid-template-columns:1fr 1fr} .setup{grid-template-columns:1fr} .setup-actions{grid-column:auto} .side{position:static}} @media(max-width:540px){main{padding:18px 14px 32px} .topbar{padding:0 14px} .category-grid,.answers,.breakdown{grid-template-columns:1fr} .hero-card,.stat-card{padding:24px} .top-actions .label{display:none}}
+
+body.light{--bg:#eef8fc;--panel:#ffffff;--panel2:#e7f5fb;--text:#102331;--muted:#527083;--line:rgba(7,46,70,.13);--shadow:0 20px 55px rgba(12,74,110,.14)}
+body.light .topbar{background:rgba(255,255,255,.86)}
+body.light select,body.light input{background:#f7fcff;color:var(--text)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+.feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.feature-card{padding:20px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.045)}
+.feature-card h3{margin:0 0 8px}.feature-card p{color:var(--muted);margin:0 0 14px;line-height:1.55}
+.search-box{width:100%;padding:14px 16px;border:1px solid var(--line);border-radius:13px;background:#0a2031;color:var(--text)}
+.guide-grid{display:grid;gap:12px;margin-top:18px;max-height:62vh;overflow:auto}
+.guide-item{padding:18px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.04)}
+.guide-item p{color:var(--muted);margin:8px 0 0;line-height:1.55}
+.flashcard{min-height:320px;padding:34px;display:grid;place-items:center;text-align:center;cursor:pointer;position:relative}
+.flashcard .front,.flashcard .back{max-width:760px}.flashcard .back{display:none}.flashcard.flipped .front{display:none}.flashcard.flipped .back{display:block}
+.flash-controls{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:16px}
+.bookmark-btn{margin-top:16px;width:100%}
+.quiz-tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.achievement-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.achievement{padding:16px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.04)}
+.achievement.locked{opacity:.42;filter:grayscale(1)}
+.history-list{display:grid;gap:10px;max-height:320px;overflow:auto}
+.history-row{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.small-note{color:var(--muted);font-size:.86rem}
+@media(max-width:800px){.feature-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:540px){.feature-grid,.achievement-grid{grid-template-columns:1fr}.flashcard{min-height:280px;padding:22px}}
+@media print{.topbar,.result-actions,.toolbar,.cta-row,.icon-btn{display:none!important}body{background:#fff;color:#000}.card,.guide-item,.review-item{box-shadow:none;border:1px solid #bbb;background:#fff;color:#000}}
+
+
+body.light .flashcard{
+  background:linear-gradient(180deg,#ffffff,#eef9fd);
+  color:#102331;
+  border-color:rgba(7,46,70,.16);
+}
+body.light .flashcard .front,
+body.light .flashcard .back,
+body.light #flashQuestion,
+body.light #flashAnswer{
+  color:#102331;
+}
+body.light #flashExplanation,
+body.light .flashcard .small-note{
+  color:#527083;
+}
+body.light #flashCategory{
+  color:#087f8c;
+}
+
+
+button:focus-visible,select:focus-visible,input:focus-visible,[role="button"]:focus-visible{
+  outline:3px solid var(--amber);outline-offset:3px
+}
+button:disabled{opacity:.55;cursor:not-allowed;transform:none!important}
+body.light .card,
+body.light .feature-card,
+body.light .guide-item,
+body.light .review-item,
+body.light .achievement,
+body.light .answer,
+body.light .category,
+body.light .stat{
+  color:var(--text)
+}
+body.light .answer:hover{background:#e7f7fb}
+body.light .feedback{background:#f5fbfe}
+body.light .feedback.good{color:#11603f;background:#e8fbf1}
+body.light .feedback.bad{color:#8a2535;background:#fff0f3}
+body.light .badge{color:#086a70;background:#dff9f7}
+body.light .eyebrow{color:#087f8c}
+body.light .score-ring:after{background:#fff}
+body.light .logo{color:#032331}
+body.light .icon-btn,body.light .secondary{color:#102331;background:#f6fbfd}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+
+
+.term-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(1,10,16,.72);backdrop-filter:blur(8px);z-index:100}
+.term-modal.open{display:flex}
+.term-dialog{width:min(620px,100%);max-height:88vh;overflow:auto;padding:24px;background:linear-gradient(180deg,rgba(16,45,67,.99),rgba(9,30,47,.99));border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}
+.term-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px}.term-dialog-head h2{margin:0;font-size:1.55rem}
+.term-close{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text);font-size:1.2rem}
+.term-input-row{display:flex;gap:10px}.term-input-row input{flex:1;min-width:0;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:#0a2031;color:var(--text)}
+.term-result{margin-top:18px}.term-word{font-size:1.55rem;margin:0 0 8px}.term-parts{display:grid;gap:9px;margin:14px 0}
+.term-part{display:grid;grid-template-columns:minmax(95px,.7fr) 1.5fr;gap:12px;padding:12px 14px;border-radius:13px;border:1px solid var(--line);background:rgba(255,255,255,.04)}
+.term-part strong{color:var(--teal)}.term-meaning{padding:15px;border-radius:14px;border:1px solid rgba(34,211,197,.3);background:rgba(34,211,197,.08);line-height:1.55}
+.term-help{color:var(--muted);font-size:.88rem;line-height:1.55}
+body.light .term-dialog{background:linear-gradient(180deg,#ffffff,#eef9fd);color:#102331}body.light .term-input-row input{background:#f7fcff;color:#102331}body.light .term-part{background:#f7fcff}body.light .term-close{background:#f6fbfd;color:#102331}
+@media(max-width:540px){.term-input-row{flex-direction:column}.term-part{grid-template-columns:1fr}}
+
+
+.auth-status{
+  color:var(--muted);font-size:.78rem;max-width:180px;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;align-self:center
+}
+.account-notice{
+  margin-bottom:20px;padding:18px 20px;display:flex;align-items:center;
+  justify-content:space-between;gap:18px
+}
+.account-notice p{margin:6px 0 0;color:var(--muted);line-height:1.5}
+.account-notice.signed-in{border-color:rgba(52,211,153,.35)}
+body.light .account-notice{background:#fff}
+@media(max-width:800px){
+  .auth-status{display:none}
+  .account-notice{align-items:flex-start;flex-direction:column}
+}
+
+
+/* Mobile layout refinement */
+@media (max-width: 640px) {
+  html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .app {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .topbar {
+    min-height: 64px;
+    height: auto;
+    padding: 8px max(10px, env(safe-area-inset-right)) 8px max(10px, env(safe-area-inset-left));
+    gap: 8px;
+    align-items: center;
+  }
+
+  .brand {
+    min-width: 0;
+    gap: 8px;
+    flex: 1 1 auto;
+  }
+
+  .brand > span {
+    font-size: .98rem;
+    line-height: 1.05;
+    white-space: nowrap;
+  }
+
+  .logo {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+  }
+
+  .top-actions {
+    flex: 0 0 auto;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .top-actions .icon-btn {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    font-size: 1rem;
+  }
+
+  .top-actions .label,
+  #authStatus,
+  #themeBtn,
+  #soundBtn,
+  #fullscreenBtn {
+    display: none !important;
+  }
+
+  main {
+    width: 100%;
+    padding: 16px 12px calc(28px + env(safe-area-inset-bottom));
+  }
+
+  .account-notice {
+    margin-bottom: 16px;
+    padding: 16px;
+    gap: 12px;
+    border-radius: 20px;
+  }
+
+  .account-notice b {
+    font-size: 1rem;
+  }
+
+  .account-notice p {
+    font-size: .92rem;
+    line-height: 1.45;
+  }
+
+  .account-notice .primary {
+    width: 100%;
+    padding: 13px 14px;
+  }
+
+  .hero {
+    gap: 16px;
+  }
+
+  .hero-card,
+  .stat-card,
+  .quiz-card,
+  .results {
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .badge {
+    font-size: .76rem;
+    padding: 7px 10px;
+  }
+
+  h1 {
+    font-size: clamp(2.25rem, 12vw, 3.3rem);
+    line-height: 1;
+    margin: 22px 0 16px;
+    letter-spacing: -.045em;
+  }
+
+  .lead {
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  .cta-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  .cta-row button {
+    width: 100%;
+    min-width: 0;
+    padding: 13px 10px;
+  }
+
+  #dashboardBtn {
+    grid-column: 1 / -1;
+  }
+
+  .stat-card {
+    display: none;
+  }
+
+  .category-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .setup {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .setup-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .quiz-shell {
+    gap: 14px;
+  }
+
+  .question {
+    font-size: 1.65rem;
+    margin-bottom: 20px;
+  }
+
+  .answers {
+    gap: 10px;
+  }
+
+  .answer {
+    min-height: 62px;
+    padding: 14px;
+  }
+
+  .side {
+    padding: 16px;
+  }
+
+  .feature-grid,
+  .achievement-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-card {
+    padding: 16px;
+  }
+
+  .term-modal {
+    padding: 10px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  }
+
+  .term-dialog {
+    max-height: 90vh;
+    padding: 18px;
+    border-radius: 18px;
+  }
+}
+
+@media (max-width: 390px) {
+  .brand > span {
+    font-size: .9rem;
+  }
+
+  .top-actions {
+    gap: 4px;
+  }
+
+  .top-actions .icon-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .cta-row {
+    grid-template-columns: 1fr;
+  }
+
+  #dashboardBtn {
+    grid-column: auto;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar"><div class="brand"><div class="logo">⚕</div><span>MedTerm Master</span></div><div class="top-actions"><span id="authStatus" class="auth-status">Not signed in</span><button class="icon-btn" id="signInBtn">G <span class="label">Sign In</span></button><button class="icon-btn" id="signOutBtn" style="display:none">↪ <span class="label">Sign Out</span></button><button class="icon-btn" id="homeTop">⌂ <span class="label">Home</span></button><button class="icon-btn" id="explainTermTop">🔍 <span class="label">Explain Term</span></button><button class="icon-btn" id="themeBtn">☀ <span class="label">Theme</span></button><button class="icon-btn" id="soundBtn">🔊 <span class="label">Sound</span></button><button class="icon-btn" id="fullscreenBtn">⛶ <span class="label">Fullscreen</span></button></div></header>
+<main>
+<section id="home" class="screen active">
+<div id="accountNotice" class="card account-notice">
+  <div>
+    <b>Verified-user tracking</b>
+    <p>Sign in with Google before starting a quiz. Your account is counted only after you complete your first quiz, and repeat visits do not create extra users.</p>
+  </div>
+  <button id="noticeSignInBtn" class="primary">Continue with Google</button>
+</div>
+<div class="hero"><div class="card hero-card"><span class="badge">HOSA Medical Terminology Prep</span><h1>Learn faster.<br><span class="gradient">Remember longer.</span></h1><p class="lead">A focused medical terminology quiz platform with 673 questions, category practice, timed testing, explanations, missed-question review, and saved best scores.</p><div class="cta-row"><button class="primary" id="chooseBtn">Choose a Quiz</button><button class="secondary" id="quickBtn">Quick 50 Questions</button><button class="secondary" id="dashboardBtn">Progress Dashboard</button><button class="secondary" id="studyGuideBtn">Study Guide</button><button class="secondary" id="flashcardsBtn">Flashcards</button></div></div><div class="card stat-card"><div class="stat-grid"><div class="stat"><strong>673</strong><span>Questions</span></div><div class="stat"><strong id="categoryCount">14</strong><span>Categories</span></div><div class="stat"><strong id="bestScore">—</strong><span>Best score</span></div><div class="stat"><strong id="completedCount">0</strong><span>Quizzes completed</span></div></div></div></div></section>
+<section id="select" class="screen"><h2 class="section-title">Build your quiz</h2><p class="section-sub">Choose a topic, quiz length, and mode. “Start New Quiz” always returns here.</p><div id="categoryGrid" class="category-grid"></div><div class="card setup"><div class="field"><label>Question count</label><select id="countSelect"><option value="50" selected>50 questions</option><option value="100">100 questions</option><option value="150">150 questions</option><option value="200">200 questions</option><option value="250">250 questions</option><option value="300">300 questions</option><option value="350">350 questions</option><option value="400">400 questions</option><option value="450">450 questions</option><option value="500">500 questions</option><option value="550">550 questions</option><option value="650">650 questions</option><option value="all">All available</option></select></div><div class="field"><label>Mode</label><select id="modeSelect"><option value="test">Test mode</option><option value="study">Study mode</option></select></div><div class="field"><label>Time per question</label><select id="timerSelect"><option value="60">60 seconds</option><option value="30">30 seconds</option><option value="0">No timer</option></select></div><div class="setup-actions"><button class="secondary" id="backHome">Back</button><button class="primary" id="startBtn">Start Quiz</button></div></div></section>
+<section id="quiz" class="screen"><div class="quiz-shell"><div class="card quiz-card"><div class="quiz-head"><div><div id="quizCategory" class="eyebrow"></div><div id="questionText" class="question"></div></div></div><div class="progress-track" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progressBar" class="progress-bar"></div></div><div id="answers" class="answers"></div><div id="feedback" class="feedback" role="status" aria-live="polite">Choose the best answer.</div></div><aside class="card side"><div class="side-row"><span>Question</span><b id="questionNumber">1 / 25</b></div><div class="side-row"><span>Score</span><b id="scoreText">0</b></div><div class="side-row"><span>Remaining</span><b id="remainingText">24</b></div><div class="side-row"><span>Time</span><b id="timerText" class="timer">1:00</b></div><div class="quiz-tools"><button class="secondary bookmark-btn" id="bookmarkBtn">☆ Save Question</button><button class="secondary" id="quitBtn" style="width:100%">Exit to quiz setup</button></div></aside></div></section>
+<section id="results" class="screen"><div class="card results"><div style="text-align:center"><span class="badge">Quiz complete</span><h2 class="section-title" style="margin-top:18px">Your results</h2><div id="scoreRing" class="score-ring"><div><strong id="percentText">0%</strong><span id="rawScore">0 / 0</span></div></div><h3 id="rankText"></h3><p id="resultMessage" class="section-sub"></p><div class="result-actions"><button id="retryMissedBtn" class="secondary">Retry missed</button><button id="reviewBtn" class="secondary">Review answers</button><button id="newQuizBtn" class="primary">Start New Quiz</button><button id="printResultsBtn" class="secondary">Print / Save Results</button></div></div><div id="breakdown" class="breakdown"></div></div></section>
+<section id="review" class="screen"><h2 class="section-title">Review missed questions</h2><p class="section-sub">Use the explanations below to strengthen weak areas.</p><div id="reviewList" class="review-list"></div><div class="cta-row"><button id="reviewBack" class="secondary">Back to results</button><button id="reviewNew" class="primary">Start New Quiz</button></div></section>
+
+<section id="dashboard" class="screen">
+<h2 class="section-title">Progress Dashboard</h2><p id="progressSaveMessage" class="section-sub">Sign in to save and sync your progress across devices.</p>
+<div class="feature-grid">
+  <div class="card feature-card"><h3>🔥 Study streak</h3><strong id="streakValue" style="font-size:2rem">0 days</strong><p>Complete at least one quiz each day to continue your streak.</p></div>
+  <div class="card feature-card"><h3>✅ Questions answered</h3><strong id="answeredValue" style="font-size:2rem">0</strong><p>Your total answered questions across completed quizzes.</p></div>
+  <div class="card feature-card"><h3>⭐ Saved questions</h3><strong id="bookmarkValue" style="font-size:2rem">0</strong><p>Questions you marked for focused review.</p></div>
+</div>
+<div class="card results" style="margin-top:18px"><h3>Achievements</h3><div id="achievementGrid" class="achievement-grid"></div></div>
+<div class="card results" style="margin-top:18px"><h3>Recent quiz history</h3><div id="historyList" class="history-list"></div></div>
+<div id="adminAnalyticsCard" class="card results" style="margin-top:18px;display:none">
+  <h3>Private Usage Analytics</h3>
+  <p class="small-note">Visible only to the authorized administrator account.</p>
+  <div class="feature-grid">
+    <div class="feature-card"><h3>Verified active users</h3><strong id="adminUserCount" style="font-size:2rem">—</strong><p>Google-authenticated accounts that completed at least one quiz.</p></div>
+    <div class="feature-card"><h3>Quizzes completed</h3><strong id="adminQuizCount" style="font-size:2rem">—</strong><p>Total completed quizzes across tracked users.</p></div>
+    <div class="feature-card"><h3>Questions answered</h3><strong id="adminQuestionCount" style="font-size:2rem">—</strong><p>Total questions in completed quizzes.</p></div>
+  </div>
+  <div class="cta-row"><button id="refreshAdminStatsBtn" class="secondary">Refresh Analytics</button></div>
+</div>
+<div class="cta-row"><button id="dashboardHome" class="primary">Back Home</button><button id="resetProgressBtn" class="danger">Reset Local Progress</button></div>
+</section>
+
+<section id="studyGuide" class="screen">
+<h2 class="section-title">Searchable Study Guide</h2><p class="section-sub">Search all questions, answers, explanations, and categories.</p>
+<div class="toolbar"><input id="guideSearch" class="search-box" placeholder="Search medical terms…"><button id="printGuideBtn" class="secondary">Print Study Guide</button><button id="guideHome" class="primary">Back Home</button></div>
+<div id="guideGrid" class="guide-grid"></div>
+</section>
+
+<section id="flashcards" class="screen">
+<h2 class="section-title">Flashcard Mode</h2><p class="section-sub">Tap the card to reveal the answer and explanation.</p>
+<div id="flashcard" class="card flashcard" role="button" tabindex="0" aria-label="Flashcard. Press Enter or Space to reveal the answer."><div class="front"><div id="flashCategory" class="eyebrow"></div><h2 id="flashQuestion"></h2><p class="small-note">Tap to reveal answer</p></div><div class="back"><h3 id="flashAnswer"></h3><p id="flashExplanation" class="section-sub"></p></div></div>
+<div class="flash-controls"><button id="flashPrev" class="secondary">Previous</button><button id="flashShuffle" class="secondary">Shuffle</button><button id="flashSave" class="secondary">☆ Save</button><button id="flashNext" class="primary">Next</button><button id="flashHome" class="secondary">Home</button></div>
+</section>
+
+</main></div><footer style="text-align:center;color:var(--muted);font-size:.78rem;padding:0 18px 26px">Installable web app. Signed-in progress can sync across devices; offline access may be limited when authentication is required.</footer>
+<div id="termModal" class="term-modal" role="dialog" aria-modal="true" aria-labelledby="termModalTitle">
+  <div class="term-dialog">
+    <div class="term-dialog-head">
+      <h2 id="termModalTitle">Break Down a Medical Term</h2>
+      <button id="termCloseBtn" class="term-close" aria-label="Close">×</button>
+    </div>
+    <p class="term-help">Enter a medical term to see its word parts and overall meaning.</p>
+    <div class="term-input-row">
+      <input id="termInput" type="text" autocomplete="off" placeholder="Example: cardiomyopathy">
+      <button id="termExplainBtn" class="primary">Explain Term</button>
+    </div>
+    <div id="termResult" class="term-result" aria-live="polite"></div>
+  </div>
+</div>
+<div id="toast" class="toast"></div>
+<script>
+let QUESTION_BANK = [];
+const FRIENDLY={Roots:'Roots, Prefixes & Suffixes',Overview:'Medical Terminology Overview',Skeletal:'Skeletal System',Muscular:'Muscular System',Respiratory:'Respiratory System',Digestive:'Digestive System',Cardiovascular_Lymphatic:'Cardiovascular & Lymphatic',Nervous_Special_Senses:'Nervous System & Special Senses',Endocrine:'Endocrine System',Reproductive:'Reproductive System',Integumentary:'Integumentary System',Urinary:'Urinary System',Overview_of_Body:'Overview of the Human Body',Roots_Prefixes_Suffixes_Combining_Forms:'Advanced Roots & Combining Forms'};
+
+const MEDICAL_PARTS={
+prefixes:{
+"brady":"slow","tachy":"fast or rapid","hyper":"above normal or excessive","hypo":"below normal or deficient","dys":"difficult, painful, or abnormal","peri":"around","endo":"within or inside","exo":"outside","intra":"within","inter":"between","sub":"under or below","super":"above or excessive","trans":"across or through","anti":"against","post":"after","pre":"before","circum":"around","ab":"away from","ad":"toward","micro":"small","macro":"large","poly":"many","mono":"one","bi":"two","tri":"three","tetra":"four","semi":"half","hemi":"half","neo":"new","retro":"backward or behind","ante":"before","infra":"below","supra":"above"
+},
+roots:{
+"cardi":"heart","my":"muscle","neur":"nerve","oste":"bone","arthr":"joint","chondr":"cartilage","gastr":"stomach","hepat":"liver","nephr":"kidney","derm":"skin","cutane":"skin","hemat":"blood","hem":"blood","ophthalm":"eye","cyt":"cell","hist":"tissue","psych":"mind","enter":"intestine","col":"colon","cyst":"bladder or sac","ur":"urine or urinary tract","pulmon":"lung","pneum":"air or lung","rhin":"nose","nas":"nose","ot":"ear","stomat":"mouth","angi":"vessel","phleb":"vein","arteri":"artery","bronch":"bronchial tubes","laryng":"larynx or voice box","trache":"trachea","encephal":"brain","cerebr":"cerebrum","myel":"spinal cord or bone marrow","aden":"gland","endocrin":"endocrine glands or hormones","gynec":"female reproductive system","andr":"male","prostat":"prostate gland","mamm":"breast","mast":"breast","kinesi":"movement","anatom":"structure","splen":"spleen","pancreat":"pancreas","cholecyst":"gallbladder","lapar":"abdomen","thorac":"chest","pleur":"pleura","dacry":"tears","blephar":"eyelid","irid":"iris","retin":"retina","pharyng":"pharynx or throat","esophag":"esophagus","proct":"rectum and anus","urethr":"urethra","orchid":"testicle","oophor":"ovary","hyster":"uterus","salping":"fallopian tube","lymph":"lymph","immun":"immune system","tox":"poison or toxin","path":"disease","onc":"tumor","carcin":"cancer","bi":"life","physi":"function or nature","radi":"radiation or x-rays","son":"sound","electr":"electricity"
+},
+suffixes:{
+"itis":"inflammation","ectomy":"surgical removal","ology":"study of","algia":"pain","pnea":"breathing","scope":"instrument for viewing","scopy":"visual examination","megaly":"enlargement","oma":"tumor or mass","osis":"abnormal condition","pathy":"disease or disorder","rrhea":"flow or discharge","plasty":"surgical repair","rrhaphy":"suturing","centesis":"surgical puncture","lysis":"breakdown or destruction","gram":"record or picture","graphy":"process of recording","emia":"blood condition","uria":"urine condition","phagia":"eating or swallowing","rrhage":"bursting forth or excessive flow","stasis":"stopping or controlling","tomy":"incision","trophy":"development or growth","cyte":"cell","blast":"immature cell","gen":"producing or forming","genic":"producing or caused by","ist":"specialist","iatry":"medical treatment","ician":"specialist or practitioner","cele":"hernia or protrusion","malacia":"softening","sclerosis":"hardening","stenosis":"narrowing","pexy":"surgical fixation","desis":"surgical binding or fusion","ia":"condition"
+}
+};
+const KNOWN_TERM_MEANINGS={
+"cardiomyopathy":"disease of the heart muscle","bradycardia":"a condition involving a slow heart rate","tachycardia":"a condition involving a fast heart rate","hepatitis":"inflammation of the liver","gastritis":"inflammation of the stomach","nephrectomy":"surgical removal of a kidney","rhinoplasty":"surgical repair of the nose","osteoporosis":"a condition in which bones become porous and weak","neuropathy":"disease or disorder of the nerves","myalgia":"muscle pain","hepatomegaly":"enlargement of the liver","colonoscopy":"visual examination of the colon","hematuria":"blood in the urine","dyspnea":"difficult or labored breathing","tachypnea":"rapid breathing","bradypnea":"slow breathing","appendectomy":"surgical removal of the appendix","tonsillectomy":"surgical removal of the tonsils"
+};
+function cleanMedicalTerm(v){return v.toLowerCase().trim().replace(/[^a-z]/g,"")}
+function longestMatch(word,dict,where){
+ const entries=Object.entries(dict).sort((a,b)=>b[0].length-a[0].length);
+ for(const [part,meaning] of entries){
+  if(where==="start"&&word.startsWith(part))return{part,meaning};
+  if(where==="end"&&word.endsWith(part))return{part,meaning};
+ }
+ return null;
+}
+function breakDownMedicalTerm(raw){
+ const original=raw.trim(),word=cleanMedicalTerm(original);
+ if(!word)return{error:"Enter a medical term first."};
+ let remaining=word,pieces=[];
+ const prefix=longestMatch(remaining,MEDICAL_PARTS.prefixes,"start");
+ if(prefix&&remaining.length>prefix.part.length+2){pieces.push({type:"Prefix",display:prefix.part+"-",meaning:prefix.meaning});remaining=remaining.slice(prefix.part.length)}
+ const suffix=longestMatch(remaining,MEDICAL_PARTS.suffixes,"end");
+ let middle=suffix?remaining.slice(0,-suffix.part.length):remaining;
+ middle=middle.replace(/o$/,"");
+ const roots=Object.entries(MEDICAL_PARTS.roots).sort((a,b)=>b[0].length-a[0].length);
+ let unmatched=middle,safety=0;
+ while(unmatched&&safety<4){
+  safety++;
+  const found=roots.find(([part])=>unmatched.startsWith(part));
+  if(!found)break;
+  pieces.push({type:"Root / Combining Form",display:found[0]+"/o",meaning:found[1]});
+  unmatched=unmatched.slice(found[0].length).replace(/^o/,"");
+ }
+ if(suffix)pieces.push({type:"Suffix",display:"-"+suffix.part,meaning:suffix.meaning});
+ return{term:original,pieces,meaning:KNOWN_TERM_MEANINGS[word]||pieces.map(p=>p.meaning).join(" + ")||null,partial:unmatched.length>2};
+}
+function renderTermBreakdown(){
+ const r=breakDownMedicalTerm($("termInput").value),box=$("termResult");
+ if(r.error){box.innerHTML=`<div class="term-meaning">${r.error}</div>`;return}
+ const rows=r.pieces.length?`<div class="term-parts">${r.pieces.map(p=>`<div class="term-part"><div><strong>${p.display}</strong><br><span class="small-note">${p.type}</span></div><div>${p.meaning}</div></div>`).join("")}</div>`:"";
+ const note=r.partial?`<p class="term-help">Only confident word-part matches are shown.</p>`:"";
+ box.innerHTML=`<h3 class="term-word">${r.term}</h3>${rows}<div class="term-meaning"><strong>Overall meaning:</strong> ${r.meaning||"A reliable meaning was not found in the current dictionary."}</div>${note}`;
+}
+function openTermModal(){$("termModal").classList.add("open");$("termInput").value="";$("termResult").innerHTML="";setTimeout(()=>$("termInput").focus(),50)}
+function closeTermModal(){$("termModal").classList.remove("open")}
+
+
+window.medTermAuthUser=null;
+window.medTermFirebaseReady=false;
+
+async function requireGoogleSignIn(action){
+  if(window.medTermAuthUser){
+    action();
+    return;
+  }
+  if(!window.medTermFirebaseReady){
+    toast('Sign-in is still loading. Please try again in a moment.');
+    return;
+  }
+  try{
+    const user=await window.medTermSignIn();
+    if(user) action();
+  }catch(error){
+    console.error(error);
+    toast('Google sign-in was not completed.');
+  }
+}
+
+
+function updateProgressSaveMessage(user){
+  const message=$('progressSaveMessage');
+  if(!message)return;
+  message.textContent=user
+    ?'Your scores, streak, bookmarks, quiz history, achievements, and best score sync with this Google account.'
+    :'Sign in to save and sync your progress across devices.';
+}
+
+function updateAuthUI(user){
+  window.medTermAuthUser=user||null;
+  const signedIn=Boolean(user);
+  $('authStatus').textContent=signedIn?(user.displayName||user.email||'Signed in'):'Not signed in';
+  $('signInBtn').style.display=signedIn?'none':'inline-block';
+  $('signOutBtn').style.display=signedIn?'inline-block':'none';
+  $('noticeSignInBtn').style.display=signedIn?'none':'inline-block';
+  $('accountNotice').classList.toggle('signed-in',signedIn);
+  $('accountNotice').querySelector('b').textContent=signedIn?'Signed in':'Verified-user tracking';
+  $('accountNotice').querySelector('p').textContent=signedIn
+    ?'Your quiz progress is synced to this Google account. Complete a quiz to be counted once as an authenticated active user.'
+    :'Sign in with Google before starting a quiz. Your account is counted only after you complete your first quiz, and repeat visits do not create extra users.';
+  updateProgressSaveMessage(user);
+}
+
+function requestSignInOnly(){
+  requireGoogleSignIn(()=>toast('Signed in successfully.'));
+}
+
+const $=id=>document.getElementById(id); let selectedCategory='all',quizQuestions=[],index=0,score=0,missed=[],answered=false,timer=null,timeLeft=0,secondsPerQuestion=60,mode='test',categoryStats={},lastResult=null;
+let flashDeck=[],flashIndex=0,soundEnabled=JSON.parse(localStorage.getItem('medterm-sound')??'true');
+function getProgress(){return JSON.parse(localStorage.getItem('medterm-progress')||'{"answered":0,"correct":0,"history":[],"bookmarks":[],"streak":0,"lastStudy":null}')}
+function setProgress(p){
+  localStorage.setItem('medterm-progress',JSON.stringify(p));
+  if(window.medTermScheduleCloudSync)window.medTermScheduleCloudSync();
+}
+function questionKey(q){return q.category+'|||'+q.question}
+function beep(type='good'){if(!soundEnabled)return;try{const ctx=new (window.AudioContext||window.webkitAudioContext)(),o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=type==='good'?620:220;g.gain.value=.05;o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+.11)}catch(e){}}
+function toggleBookmark(q){const p=getProgress(),k=questionKey(q),i=p.bookmarks.indexOf(k);if(i>=0)p.bookmarks.splice(i,1);else p.bookmarks.push(k);setProgress(p);updateBookmarkButton();toast(i>=0?'Question removed from saved list.':'Question saved for later review.')}
+function isBookmarked(q){return getProgress().bookmarks.includes(questionKey(q))}
+function updateBookmarkButton(){if(!$('bookmarkBtn')||!quizQuestions[index])return;$('bookmarkBtn').textContent=isBookmarked(quizQuestions[index])?'★ Saved Question':'☆ Save Question'}
+function updateStreak(p){const today=new Date().toISOString().slice(0,10);if(p.lastStudy===today)return p;const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);p.streak=p.lastStudy===yesterday?(p.streak||0)+1:1;p.lastStudy=today;return p}
+function recordQuiz(percent,total,correct){let p=getProgress();p=updateStreak(p);p.answered=(p.answered||0)+total;p.correct=(p.correct||0)+correct;p.history=p.history||[];p.history.unshift({date:new Date().toLocaleDateString(),percent,total,correct});p.history=p.history.slice(0,20);setProgress(p)}
+function achievements(p){return[
+ {icon:'🎯',name:'First Quiz',done:(p.history||[]).length>=1,desc:'Complete your first quiz'},
+ {icon:'🔥',name:'3-Day Streak',done:(p.streak||0)>=3,desc:'Study three days in a row'},
+ {icon:'💯',name:'Perfect Score',done:(p.history||[]).some(h=>h.percent===100),desc:'Earn 100% on a quiz'},
+ {icon:'🧠',name:'500 Answers',done:(p.answered||0)>=500,desc:'Answer 500 questions'},
+ {icon:'⭐',name:'Focused Learner',done:(p.bookmarks||[]).length>=10,desc:'Save 10 difficult questions'},
+ {icon:'🏆',name:'Quiz Veteran',done:(p.history||[]).length>=10,desc:'Complete 10 quizzes'}
+]}
+function renderDashboard(){const p=getProgress();$('streakValue').textContent=(p.streak||0)+' day'+((p.streak||0)===1?'':'s');$('answeredValue').textContent=p.answered||0;$('bookmarkValue').textContent=(p.bookmarks||[]).length;$('achievementGrid').innerHTML=achievements(p).map(a=>`<div class="achievement ${a.done?'':'locked'}"><b>${a.icon} ${a.name}</b><p class="small-note">${a.desc}</p></div>`).join('');$('historyList').innerHTML=(p.history||[]).length?p.history.map(h=>`<div class="history-row"><span>${h.date} · ${h.correct}/${h.total}</span><b>${h.percent}%</b></div>`).join(''):'<p class="small-note">No completed quizzes yet.</p>';show('dashboard')}
+function renderGuide(term=''){const t=term.trim().toLowerCase();const saved=new Set(getProgress().bookmarks||[]);const list=QUESTION_BANK.filter(q=>!t||`${q.question} ${q.choices[q.answer]} ${q.explanation} ${FRIENDLY[q.category]||q.category}`.toLowerCase().includes(t)).slice(0,250);$('guideGrid').innerHTML=list.length?list.map(q=>`<div class="guide-item"><b>${FRIENDLY[q.category]||q.category}</b><h3>${q.question}</h3><p><strong>Answer:</strong> ${q.choices[q.answer]}</p><p>${q.explanation||''}</p><button class="secondary guide-save" data-key="${questionKey(q).replaceAll('"','&quot;')}">${saved.has(questionKey(q))?'★ Saved':'☆ Save'}</button></div>`).join(''):'<div class="guide-item">No matches found.</div>';document.querySelectorAll('.guide-save').forEach((b,i)=>b.onclick=()=>{const q=list[i];toggleBookmark(q);renderGuide($('guideSearch').value)})}
+function startFlashcards(){const p=getProgress(),saved=new Set(p.bookmarks||[]);flashDeck=QUESTION_BANK.filter(q=>saved.has(questionKey(q)));if(!flashDeck.length)flashDeck=shuffle(QUESTION_BANK).slice(0,100);flashIndex=0;renderFlashcard();show('flashcards')}
+function renderFlashcard(){if(!flashDeck.length){$('flashQuestion').textContent='No flashcards are available.';$('flashAnswer').textContent='';$('flashExplanation').textContent='';return;}const q=flashDeck[flashIndex];$('flashcard').classList.remove('flipped');$('flashCategory').textContent=FRIENDLY[q.category]||q.category;$('flashQuestion').textContent=q.question;$('flashAnswer').textContent=q.choices[q.answer];$('flashExplanation').textContent=q.explanation||'';$('flashSave').textContent=isBookmarked(q)?'★ Saved':'☆ Save'}
+
+function shuffle(a){const x=[...a];for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x}
+
+async function loadQuestionBank(){
+  const status=$('accountNotice')?.querySelector('p');
+  const originalStatus=status?.textContent||'';
+  if(status)status.textContent='Loading the medical terminology question bank…';
+
+  try{
+    const response=await fetch('questions.json',{cache:'no-cache'});
+    if(!response.ok)throw new Error(`Question bank request failed (${response.status}).`);
+    const data=await response.json();
+
+    if(!Array.isArray(data)||!data.length)throw new Error('Question bank is empty.');
+    const valid=data.every(q=>
+      q&&typeof q.question==='string'&&
+      Array.isArray(q.choices)&&q.choices.length===4&&
+      Number.isInteger(q.answer)&&q.answer>=0&&q.answer<4&&
+      typeof q.category==='string'
+    );
+    if(!valid)throw new Error('Question bank format is invalid.');
+
+    QUESTION_BANK=data;
+    categories=[...new Set(QUESTION_BANK.map(q=>q.category))];
+    $('categoryCount').textContent=categories.length;
+    renderCategories();
+    if(status)status.textContent=originalStatus;
+  }catch(error){
+    console.error(error);
+    if(status)status.textContent='The question bank could not load. Refresh the page or check that questions.json was uploaded beside index.html.';
+    document.querySelectorAll('#chooseBtn,#quickBtn,#studyGuideBtn,#flashcardsBtn,#startBtn')
+      .forEach(button=>button.disabled=true);
+    toast('Question bank failed to load.');
+  }
+}
+
+function registerMedTermServiceWorker(){
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',()=>{
+      navigator.serviceWorker.register('./service-worker.js')
+        .catch(error=>console.error('Service worker registration failed:',error));
+    });
+  }
+}
+
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
+function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),1800)}
+let categories=[];
+function renderCategories(){const counts={};QUESTION_BANK.forEach(q=>counts[q.category]=(counts[q.category]||0)+1);$('categoryGrid').innerHTML='';const opts=[['all','All Categories',QUESTION_BANK.length],...categories.map(c=>[c,FRIENDLY[c]||c,counts[c]])];opts.forEach(([key,name,count])=>{const b=document.createElement('button');b.className='category'+(key===selectedCategory?' selected':'');b.innerHTML=`<b>${name}</b><small>${count} questions</small>`;b.onclick=()=>{selectedCategory=key;renderCategories()};$('categoryGrid').appendChild(b)})}
+function loadStats(){const s=JSON.parse(localStorage.getItem('medterm-stats')||'{}');$('bestScore').textContent=s.best!=null?s.best+'%':'—';$('completedCount').textContent=s.completed||0}
+function saveStats(percent){
+  const s=JSON.parse(localStorage.getItem('medterm-stats')||'{}');
+  s.completed=(s.completed||0)+1;
+  s.best=Math.max(s.best||0,percent);
+  localStorage.setItem('medterm-stats',JSON.stringify(s));
+  loadStats();
+  if(window.medTermScheduleCloudSync)window.medTermScheduleCloudSync();
+}
+function begin(config={}){selectedCategory=config.category??selectedCategory;mode=config.mode??$('modeSelect').value;secondsPerQuestion=mode==='study'?0:Number(config.timer??$('timerSelect').value);let pool=selectedCategory==='all'?QUESTION_BANK:QUESTION_BANK.filter(q=>q.category===selectedCategory);const requested=config.count??$('countSelect').value;let count=requested==='all'?pool.length:Math.min(Number(requested),pool.length);quizQuestions=shuffle(pool).slice(0,count);if(!quizQuestions.length){toast('No questions are available for that selection.');show('select');return;}index=0;score=0;missed=[];categoryStats={};lastResult=null;show('quiz');renderQuestion()}
+function renderQuestion(){clearInterval(timer);answered=false;if(index>=quizQuestions.length)return finish();const q=quizQuestions[index];$('quizCategory').textContent=FRIENDLY[q.category]||q.category;$('questionText').textContent=q.question;$('questionNumber').textContent=`${index+1} / ${quizQuestions.length}`;$('scoreText').textContent=score;$('remainingText').textContent=quizQuestions.length-index-1;const progressPercent=Math.round((index/quizQuestions.length)*100);$('progressBar').style.width=`${progressPercent}%`;$('progressBar').parentElement.setAttribute('aria-valuenow',progressPercent);$('feedback').className='feedback';$('feedback').textContent=mode==='study'?'Choose an answer to see the explanation.':'Choose the best answer.';$('answers').innerHTML='';const shuffledChoices=shuffle(q.choices.map((choice,originalIndex)=>({choice,originalIndex})));shuffledChoices.forEach(({choice,originalIndex},displayIndex)=>{const b=document.createElement('button');b.className='answer';b.dataset.originalIndex=originalIndex;b.innerHTML=`<span class="letter">${'ABCD'[displayIndex]}</span><span>${choice}</span>`;b.onclick=()=>answer(originalIndex);$('answers').appendChild(b)});updateBookmarkButton();startTimer()}
+function startTimer(){clearInterval(timer);if(secondsPerQuestion===0){$('timerText').textContent='Off';$('timerText').classList.remove('low');return}timeLeft=secondsPerQuestion;drawTimer();timer=setInterval(()=>{timeLeft--;drawTimer();if(timeLeft<=0){clearInterval(timer);if(!answered)answer(-1,true)}},1000)} function drawTimer(){const m=Math.floor(timeLeft/60),s=String(timeLeft%60).padStart(2,'0');$('timerText').textContent=`${m}:${s}`;$('timerText').classList.toggle('low',timeLeft<=10)}
+function answer(choice,timedOut=false){if(answered)return;answered=true;clearInterval(timer);const q=quizQuestions[index];const buttons=[...document.querySelectorAll('.answer')];buttons.forEach(b=>b.disabled=true);const chosenButton=buttons.find(b=>Number(b.dataset.originalIndex)===choice);const correctButton=buttons.find(b=>Number(b.dataset.originalIndex)===q.answer);const stats=categoryStats[q.category]||(categoryStats[q.category]={correct:0,total:0});stats.total++;if(choice===q.answer){score++;stats.correct++;chosenButton?.classList.add('correct');beep('good');$('feedback').className='feedback good';$('feedback').innerHTML=`<b>Correct.</b> ${q.explanation||''}`}else{missed.push(q);if(choice>=0)chosenButton?.classList.add('wrong');correctButton?.classList.add('correct');beep('bad');$('feedback').className='feedback bad';$('feedback').innerHTML=`<b>${timedOut?"Time's up.":'Not quite.'}</b> Correct answer: ${q.choices[q.answer]}. ${q.explanation||''}`}$('scoreText').textContent=score;setTimeout(()=>{index++;renderQuestion()},mode==='study'?1800:1100)}
+function rank(p){if(p===100)return'🏆 HOSA Master';if(p>=90)return'🥇 Medical Scholar';if(p>=80)return'🥈 Clinical Expert';if(p>=70)return'🥉 Specialist';if(p>=60)return'⭐ Advanced';if(p>=50)return'📘 Proficient';return'📖 Developing'}
+function finish(){clearInterval(timer);const p=Math.round(score/quizQuestions.length*100);lastResult={questions:[...quizQuestions],score,missed:[...missed],categoryStats:JSON.parse(JSON.stringify(categoryStats)),percent:p};saveStats(p);recordQuiz(p,quizQuestions.length,score);if(window.medTermTrackCompletedQuiz){window.medTermTrackCompletedQuiz({percent:p,total:quizQuestions.length,correct:score}).catch(error=>{console.error('Tracking error:',error);toast('Quiz saved locally; online tracking could not update.')});}$('percentText').textContent=p+'%';$('rawScore').textContent=`${score} / ${quizQuestions.length}`;$('rankText').textContent=rank(p);$('resultMessage').textContent=missed.length?`You missed ${missed.length} question${missed.length===1?'':'s'}. Review them or retry only those questions.`:'Perfect score — no missed questions to review.';$('scoreRing').style.setProperty('--score',p+'%');$('retryMissedBtn').style.display=missed.length?'inline-block':'none';$('reviewBtn').style.display=missed.length?'inline-block':'none';$('breakdown').innerHTML='';Object.entries(categoryStats).forEach(([cat,s])=>{const d=document.createElement('div');d.className='break-item';const cp=Math.round(s.correct/s.total*100);d.innerHTML=`<b>${FRIENDLY[cat]||cat}</b><p>${s.correct} / ${s.total} correct · ${cp}%</p>`;$('breakdown').appendChild(d)});show('results')}
+function retryMissed(){if(!lastResult?.missed.length)return;quizQuestions=shuffle(lastResult.missed);index=0;score=0;missed=[];categoryStats={};show('quiz');renderQuestion()}
+function review(){const list=lastResult?.missed||[];$('reviewList').innerHTML=list.length?'':'<div class="review-item">No missed questions.</div>';list.forEach((q,i)=>{const d=document.createElement('div');d.className='review-item';d.innerHTML=`<b>${i+1}. ${q.question}</b><p><strong>Correct answer:</strong> ${q.choices[q.answer]}</p><p>${q.explanation||''}</p>`;$('reviewList').appendChild(d)});show('review')}
+function goSetup(){clearInterval(timer);selectedCategory='all';$('countSelect').value='50';$('modeSelect').value='test';$('timerSelect').value='60';renderCategories();show('select')}
+
+
+$('signInBtn').onclick=requestSignInOnly;
+$('noticeSignInBtn').onclick=requestSignInOnly;
+$('signOutBtn').onclick=async()=>{
+  try{await window.medTermSignOut();toast('Signed out.')}catch(error){console.error(error);toast('Could not sign out.')}
+};
+$('refreshAdminStatsBtn').onclick=()=>{
+  if(window.medTermLoadAdminStats)window.medTermLoadAdminStats();
+};
+$('explainTermTop').onclick=openTermModal;
+$('termCloseBtn').onclick=closeTermModal;
+$('termExplainBtn').onclick=renderTermBreakdown;
+$('termInput').addEventListener('keydown',e=>{if(e.key==='Enter')renderTermBreakdown()});
+$('termModal').addEventListener('click',e=>{if(e.target===$('termModal'))closeTermModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('termModal').classList.contains('open'))closeTermModal()});
+$('chooseBtn').onclick=()=>{renderCategories();show('select')};
+$('quickBtn').onclick=()=>requireGoogleSignIn(()=>begin({category:'all',count:50,mode:'test',timer:60}));
+$('dashboardBtn').onclick=renderDashboard;
+$('studyGuideBtn').onclick=()=>{renderGuide();show('studyGuide')};
+$('flashcardsBtn').onclick=startFlashcards;
+$('startBtn').onclick=()=>requireGoogleSignIn(()=>begin());
+$('backHome').onclick=()=>show('home');
+$('homeTop').onclick=()=>{if($('quiz').classList.contains('active')&&!confirm('Leave the current quiz? Your current attempt will not be saved.'))return;clearInterval(timer);show('home')};
+$('quitBtn').onclick=()=>{if(confirm('Exit this quiz and return to setup? Your current attempt will not be saved.'))goSetup()};
+$('newQuizBtn').onclick=goSetup;
+$('retryMissedBtn').onclick=()=>requireGoogleSignIn(retryMissed);
+$('reviewBtn').onclick=review;
+$('reviewBack').onclick=()=>show('results');
+$('reviewNew').onclick=goSetup;
+$('bookmarkBtn').onclick=()=>{if(quizQuestions[index])toggleBookmark(quizQuestions[index])};
+$('printResultsBtn').onclick=()=>window.print();
+$('dashboardHome').onclick=()=>show('home');
+$('resetProgressBtn').onclick=async()=>{
+  if(confirm('Reset your saved scores, streaks, history, achievements, and bookmarks on this account? Usage totals used for private analytics will not be erased.')){
+    localStorage.removeItem('medterm-progress');
+    localStorage.removeItem('medterm-stats');
+    loadStats();
+    if(window.medTermResetCloudProgress){
+      try{await window.medTermResetCloudProgress();toast('Account progress reset.');}
+      catch(error){console.error(error);toast('Local progress reset, but cloud reset failed.');}
+    }else{
+      toast('Local progress reset.');
+    }
+    renderDashboard();
+  }
+};
+$('guideSearch').oninput=e=>renderGuide(e.target.value);
+$('guideHome').onclick=()=>show('home');
+$('printGuideBtn').onclick=()=>window.print();
+$('flashcard').onclick=()=>$('flashcard').classList.toggle('flipped');$('flashcard').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('flashcard').click()}};
+$('flashPrev').onclick=()=>{flashIndex=(flashIndex-1+flashDeck.length)%flashDeck.length;renderFlashcard()};
+$('flashNext').onclick=()=>{flashIndex=(flashIndex+1)%flashDeck.length;renderFlashcard()};
+$('flashShuffle').onclick=()=>{flashDeck=shuffle(flashDeck);flashIndex=0;renderFlashcard()};
+$('flashSave').onclick=()=>{toggleBookmark(flashDeck[flashIndex]);renderFlashcard()};
+$('flashHome').onclick=()=>show('home');
+$('themeBtn').onclick=()=>{document.body.classList.toggle('light');localStorage.setItem('medterm-theme',document.body.classList.contains('light')?'light':'dark')};
+$('soundBtn').onclick=()=>{soundEnabled=!soundEnabled;localStorage.setItem('medterm-sound',JSON.stringify(soundEnabled));$('soundBtn').innerHTML=(soundEnabled?'🔊':'🔇')+' <span class="label">Sound</span>';toast(soundEnabled?'Sound on':'Sound off')};
+$('fullscreenBtn').onclick=async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen()}catch(e){toast('Fullscreen is unavailable in this browser.')}};
+document.addEventListener('keydown',e=>{
+  if($('quiz').classList.contains('active')&&!answered){
+    const map={'1':0,'2':1,'3':2,'4':3};const k=e.key.toLowerCase();if(map[k]!=null){const btn=[...document.querySelectorAll('.answer')][map[k]];btn?.click()}
+  }
+  if($('flashcards').classList.contains('active')){if(e.key==='ArrowRight')$('flashNext').click();if(e.key==='ArrowLeft')$('flashPrev').click();if(e.key===' ')$('flashcard').click()}
+});
+if(localStorage.getItem('medterm-theme')==='light')document.body.classList.add('light');
+$('soundBtn').innerHTML=(soundEnabled?'🔊':'🔇')+' <span class="label">Sound</span>';
+loadStats();
+registerMedTermServiceWorker();
+loadQuestionBank();
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+  increment,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDO8yl20z91VDSqcRVq4kaPrOie-XuKPI8",
+  authDomain: "midterm-master.firebaseapp.com",
+  projectId: "midterm-master",
+  storageBucket: "midterm-master.firebasestorage.app",
+  messagingSenderId: "414883724411",
+  appId: "1:414883724411:web:6814e01831de61b6b6f6de"
+};
+
+const ADMIN_EMAIL = "dimpu.padala@gmail.com";
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({ prompt: "select_account" });
+
+const DEFAULT_PROGRESS={
+  answered:0,
+  correct:0,
+  history:[],
+  bookmarks:[],
+  streak:0,
+  lastStudy:null
+};
+const DEFAULT_STATS={completed:0,best:null};
+let cloudSyncTimer=null;
+let applyingCloudState=false;
+
+function getLocalAccountState(){
+  let progress={...DEFAULT_PROGRESS};
+  let stats={...DEFAULT_STATS};
+  try{
+    progress={...DEFAULT_PROGRESS,...JSON.parse(localStorage.getItem("medterm-progress")||"{}")};
+    stats={...DEFAULT_STATS,...JSON.parse(localStorage.getItem("medterm-stats")||"{}")};
+  }catch(error){
+    console.error("Could not read local progress:",error);
+  }
+  progress.history=Array.isArray(progress.history)?progress.history.slice(0,20):[];
+  progress.bookmarks=Array.isArray(progress.bookmarks)?progress.bookmarks:[];
+  return {progress,stats};
+}
+
+function applyAccountStateToBrowser(savedProgress,savedStats){
+  applyingCloudState=true;
+  localStorage.setItem("medterm-progress",JSON.stringify({...DEFAULT_PROGRESS,...(savedProgress||{})}));
+  localStorage.setItem("medterm-stats",JSON.stringify({...DEFAULT_STATS,...(savedStats||{})}));
+  applyingCloudState=false;
+  loadStats();
+  if(document.getElementById("dashboard")?.classList.contains("active"))renderDashboard();
+}
+
+async function saveAccountState(user=auth.currentUser){
+  if(!user||applyingCloudState)return;
+  const {progress,stats}=getLocalAccountState();
+  await setDoc(doc(db,"users",user.uid),{
+    uid:user.uid,
+    savedProgress:progress,
+    savedStats:stats,
+    progressUpdatedAt:serverTimestamp()
+  },{merge:true});
+}
+
+window.medTermScheduleCloudSync=function(){
+  if(!auth.currentUser||applyingCloudState)return;
+  clearTimeout(cloudSyncTimer);
+  cloudSyncTimer=setTimeout(()=>{
+    saveAccountState().catch(error=>console.error("Progress sync failed:",error));
+  },450);
+};
+
+async function ensureProfile(user){
+  const ref=doc(db,"users",user.uid);
+  const snap=await getDoc(ref);
+
+  if(!snap.exists()){
+    const localState=getLocalAccountState();
+    await setDoc(ref,{
+      uid:user.uid,
+      createdAt:serverTimestamp(),
+      firstQuizCompleted:false,
+      quizzesCompleted:0,
+      questionsAnswered:0,
+      totalCorrect:0,
+      totalScorePercent:0,
+      lastQuizAt:null,
+      savedProgress:localState.progress,
+      savedStats:localState.stats,
+      progressUpdatedAt:serverTimestamp()
+    });
+    applyAccountStateToBrowser(localState.progress,localState.stats);
+    return;
+  }
+
+  const data=snap.data();
+  if(data.savedProgress||data.savedStats){
+    applyAccountStateToBrowser(data.savedProgress||DEFAULT_PROGRESS,data.savedStats||DEFAULT_STATS);
+  }else{
+    const localState=getLocalAccountState();
+    await setDoc(ref,{
+      savedProgress:localState.progress,
+      savedStats:localState.stats,
+      progressUpdatedAt:serverTimestamp()
+    },{merge:true});
+    applyAccountStateToBrowser(localState.progress,localState.stats);
+  }
+}
+
+window.medTermResetCloudProgress=async function(){
+  const user=auth.currentUser;
+  if(!user)return;
+  applyAccountStateToBrowser(DEFAULT_PROGRESS,DEFAULT_STATS);
+  await setDoc(doc(db,"users",user.uid),{
+    savedProgress:DEFAULT_PROGRESS,
+    savedStats:DEFAULT_STATS,
+    progressUpdatedAt:serverTimestamp()
+  },{merge:true});
+};
+
+window.medTermSignIn = async function(){
+  const result = await signInWithPopup(auth,provider);
+  await ensureProfile(result.user);
+  return result.user;
+};
+
+window.medTermSignOut = async function(){
+  if(auth.currentUser)await saveAccountState(auth.currentUser);
+  await signOut(auth);
+};
+
+window.medTermTrackCompletedQuiz = async function({percent,total,correct}){
+  const user=auth.currentUser;
+  if(!user)throw new Error("A signed-in user is required.");
+  const {progress,stats}=getLocalAccountState();
+  const ref=doc(db,"users",user.uid);
+  await setDoc(ref,{
+    uid:user.uid,
+    firstQuizCompleted:true,
+    quizzesCompleted:increment(1),
+    questionsAnswered:increment(total),
+    totalCorrect:increment(correct),
+    totalScorePercent:increment(percent),
+    lastQuizAt:serverTimestamp(),
+    savedProgress:progress,
+    savedStats:stats,
+    progressUpdatedAt:serverTimestamp()
+  },{merge:true});
+  if(user.email===ADMIN_EMAIL)await window.medTermLoadAdminStats();
+};
+
+window.medTermLoadAdminStats = async function(){
+  const user=auth.currentUser;
+  const card=document.getElementById("adminAnalyticsCard");
+  if(!user || user.email!==ADMIN_EMAIL){
+    card.style.display="none";
+    return;
+  }
+
+  card.style.display="block";
+  const activeQuery=query(collection(db,"users"),where("firstQuizCompleted","==",true));
+  const snapshot=await getDocs(activeQuery);
+
+  let quizzes=0;
+  let questions=0;
+  snapshot.forEach(item=>{
+    const data=item.data();
+    quizzes+=Number(data.quizzesCompleted||0);
+    questions+=Number(data.questionsAnswered||0);
+  });
+
+  document.getElementById("adminUserCount").textContent=String(snapshot.size);
+  document.getElementById("adminQuizCount").textContent=quizzes.toLocaleString();
+  document.getElementById("adminQuestionCount").textContent=questions.toLocaleString();
+};
+
+onAuthStateChanged(auth,async user=>{
+  try{
+    if(user) await ensureProfile(user);
+    updateAuthUI(user);
+    if(user?.email===ADMIN_EMAIL){
+      document.getElementById("adminAnalyticsCard").style.display="block";
+      await window.medTermLoadAdminStats();
+    }else{
+      document.getElementById("adminAnalyticsCard").style.display="none";
+    }
+  }catch(error){
+    console.error("Firebase initialization error:",error);
+    updateAuthUI(user);
+  }
+});
+
+window.medTermFirebaseReady=true;
+</script>
+
+</body></html>
