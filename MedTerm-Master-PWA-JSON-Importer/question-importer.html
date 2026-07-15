@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MedTerm Question Importer</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,sans-serif;background:#f5f7fa;color:#111827}
+main{width:min(900px,92%);margin:40px auto}
+.card{background:#fff;border:1px solid #d8dee8;border-radius:16px;padding:24px;margin-bottom:18px}
+h1,h2{margin-top:0}
+label{font-weight:700;display:block;margin-bottom:8px}
+input,button,textarea{font:inherit}
+input[type=file]{width:100%;padding:14px;border:1px dashed #64748b;border-radius:12px}
+button{padding:12px 16px;border:0;border-radius:10px;background:#0f766e;color:#fff;font-weight:700;cursor:pointer;margin:8px 8px 0 0}
+button.secondary{background:#334155}
+pre{white-space:pre-wrap;overflow:auto;background:#f1f5f9;padding:14px;border-radius:12px;max-height:320px}
+.good{color:#166534}.bad{color:#b91c1c}
+code{background:#eef2f7;padding:2px 5px;border-radius:5px}
+</style>
+</head>
+<body>
+<main>
+<div class="card">
+<h1>MedTerm Question Importer</h1>
+<p>Upload a CSV or JSON question file. The importer validates it and creates a ready-to-upload <code>questions.json</code> file.</p>
+<p>This tool runs entirely in your browser. It does not upload the question file anywhere.</p>
+</div>
+
+<div class="card">
+<h2>Required CSV columns</h2>
+<p><code>question, choice1, choice2, choice3, choice4, answer, category, explanation</code></p>
+<p>The <code>answer</code> value may be <code>1–4</code>, <code>0–3</code>, or <code>A–D</code>.</p>
+<label for="fileInput">Choose CSV or JSON file</label>
+<input id="fileInput" type="file" accept=".csv,.json,application/json,text/csv">
+<button id="convertBtn">Validate and Create questions.json</button>
+<button id="templateBtn" class="secondary">Download CSV Template</button>
+</div>
+
+<div class="card">
+<h2>Results</h2>
+<p id="status">No file selected.</p>
+<pre id="preview"></pre>
+</div>
+</main>
+
+<script>
+const fileInput=document.getElementById('fileInput');
+const status=document.getElementById('status');
+const preview=document.getElementById('preview');
+let converted=[];
+
+function download(name,text,type){
+  const blob=new Blob([text],{type});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=name;a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),500);
+}
+
+function parseCSV(text){
+  const rows=[];
+  let row=[],field='',quoted=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i],next=text[i+1];
+    if(ch==='"'){
+      if(quoted&&next==='"'){field+='"';i++}
+      else quoted=!quoted;
+    }else if(ch===','&&!quoted){
+      row.push(field);field='';
+    }else if((ch==='\n'||ch==='\r')&&!quoted){
+      if(ch==='\r'&&next==='\n')i++;
+      row.push(field);field='';
+      if(row.some(v=>v.trim()!==''))rows.push(row);
+      row=[];
+    }else field+=ch;
+  }
+  row.push(field);
+  if(row.some(v=>v.trim()!==''))rows.push(row);
+  if(rows.length<2)throw new Error('CSV must include a header and at least one question.');
+
+  const headers=rows[0].map(h=>h.trim().toLowerCase());
+  const needed=['question','choice1','choice2','choice3','choice4','answer','category','explanation'];
+  needed.forEach(h=>{if(!headers.includes(h))throw new Error(`Missing CSV column: ${h}`)});
+
+  return rows.slice(1).map((values,index)=>{
+    const data={};
+    headers.forEach((h,i)=>data[h]=(values[i]||'').trim());
+    return normalizeQuestion(data,index+2);
+  });
+}
+
+function normalizeAnswer(value){
+  const raw=String(value).trim().toUpperCase();
+  if(['A','B','C','D'].includes(raw))return raw.charCodeAt(0)-65;
+  const number=Number(raw);
+  if(Number.isInteger(number)&&number>=1&&number<=4)return number-1;
+  if(Number.isInteger(number)&&number>=0&&number<=3)return number;
+  throw new Error(`Invalid answer value "${value}". Use A-D, 1-4, or 0-3.`);
+}
+
+function normalizeQuestion(data,rowNumber='unknown'){
+  const choices=Array.isArray(data.choices)
+    ? data.choices.map(String)
+    : [data.choice1,data.choice2,data.choice3,data.choice4].map(v=>String(v||''));
+
+  const item={
+    question:String(data.question||'').trim(),
+    choices:choices.map(v=>v.trim()),
+    answer:normalizeAnswer(data.answer),
+    category:String(data.category||'').trim(),
+    explanation:String(data.explanation||'').trim()
+  };
+
+  if(!item.question)throw new Error(`Missing question at row/item ${rowNumber}.`);
+  if(item.choices.length!==4||item.choices.some(v=>!v))throw new Error(`Exactly four choices are required at row/item ${rowNumber}.`);
+  if(!item.category)throw new Error(`Missing category at row/item ${rowNumber}.`);
+  if(!item.explanation)throw new Error(`Missing explanation at row/item ${rowNumber}.`);
+  return item;
+}
+
+function validateJSON(value){
+  if(!Array.isArray(value))throw new Error('JSON must contain an array of questions.');
+  return value.map((item,index)=>normalizeQuestion(item,index+1));
+}
+
+document.getElementById('convertBtn').onclick=async()=>{
+  try{
+    const file=fileInput.files[0];
+    if(!file)throw new Error('Choose a CSV or JSON file first.');
+    const text=await file.text();
+    converted=file.name.toLowerCase().endsWith('.json')
+      ? validateJSON(JSON.parse(text))
+      : parseCSV(text);
+
+    status.className='good';
+    status.textContent=`Validated ${converted.length} questions successfully. Downloading questions.json…`;
+    preview.textContent=JSON.stringify(converted.slice(0,3),null,2)+(converted.length>3?'\n\nPreview shows first 3 questions.':'');
+    download('questions.json',JSON.stringify(converted,null,2),'application/json');
+  }catch(error){
+    status.className='bad';
+    status.textContent=error.message;
+    preview.textContent='';
+  }
+};
+
+document.getElementById('templateBtn').onclick=()=>{
+  const template=[
+    ['question','choice1','choice2','choice3','choice4','answer','category','explanation'],
+    ['What does the prefix brady- mean?','Fast','Slow','Large','Painful','2','Roots','The prefix brady- means slow.']
+  ];
+  const csv=template.map(row=>row.map(value=>`"${String(value).replaceAll('"','""')}"`).join(',')).join('\n');
+  download('medterm-question-template.csv',csv,'text/csv');
+};
+</script>
+</body>
+</html>
